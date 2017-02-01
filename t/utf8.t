@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use utf8;
-use Scalar::Util 'blessed';  #  not used
 use Encode qw(encode decode);
 use Test::More tests => 13;
 BEGIN { use_ok('Geo::GDAL') };
