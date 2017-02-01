@@ -25,7 +25,8 @@ branches:
 
 notifications:
   recipients:
-    - ari.jolma@gmail.com
+    #  temp - remove before pull request
+    - shawnlaffan@gmail.com
   email:
     on_success: change
     on_failure: always
