@@ -21,7 +21,7 @@ ok($e, "touch a file with non-ascii character"); # and it is there
 my %files = map {$_=>1} Geo::GDAL::VSIF::ReadDir('./');
 
 ok($files{$fn}, "Geo::GDAL::VSIF::ReadDir found file $fn")
-or diag "Possible matches: " . join ' ', sort grep {/ri$/} keys %files;
+or diag "Possible matches: " . join ' ', sort grep {/^__.+ri$/} keys %files;
 
 eval {
     Geo::GDAL::VSIF::Unlink($fn);
@@ -31,11 +31,11 @@ $e = -e $fn;
 ok(!$e, "file was deleted using Geo::GDAL::VSIF::Unlink");
 
 # that works because the variable has utf8 flag set
-ok(utf8::is_utf8($fn), "Perl knows it is utf8");
+ok(utf8::is_utf8($fn), "Perl knows the filename is utf8");
 
 touch ($fn); # touch it again
 
-$fn = "\xC4ri"; # same filename in Perl's internal format
+$fn = "__\xC4ri"; # same filename in Perl's internal format
 ok(!utf8::is_utf8($fn), "Perl does not have utf8");
 
 $e = -e $fn;
@@ -46,21 +46,21 @@ Encode::_utf8_on($fn); # yes, you have utf8 now
 $e = -e $fn;
 ok($e, "yes it is");
 
-$fn = "\xC4ri"; # internal format, no utf8 flag
+$fn = "__\xC4ri"; # internal format, no utf8 flag
 eval {
     Geo::GDAL::VSIF::Unlink($fn); # encoding is done in the bindings
 };
 $e = -e $fn;
 ok(!$e, "encoding is done in the bindings");
 
-my $fh = touch ("Äri"); # touch it again
+my $fh = touch ("__Äri"); # touch it again
 %files = map {$_=>$_} Geo::GDAL::VSIF::ReadDir('./');
-$fn = $files{'Äri'};
+$fn = $files{'__Äri'};
 ok(utf8::is_utf8($fn), "utf8 flag is set in the bindings");
 
-print {$fh} "Äri";
+print {$fh} "__Äri";
 close $fh;
-open $fh, '<', "Äri" or die "Cannot open file Äri";
+open $fh, '<', "__Äri" or die "Cannot open file Äri";
 $fn = <$fh>;
 chomp($fn);
 ok(!utf8::is_utf8($fn), "Perl does not know it has utf8");
@@ -73,7 +73,7 @@ Encode::_utf8_on($fn); # yes, you have utf8 now
 eval {
     Geo::GDAL::VSIF::Unlink($fn);
 };
-diag $@ if $@;
+#diag $@ if $@;
 $e = -e $fn;
 ok(!$e, "show is over");
 
