@@ -30,7 +30,11 @@ ok($e, "touch a file with non-ascii character"); # and it is there
 my %files = map {$_=>1} Geo::GDAL::VSIF::ReadDir('./');
 
 ok($files{$fn}, "Geo::GDAL::VSIF::ReadDir found file $fn")
-or diag "Possible matches: " . join ' ', sort grep {/^__.+ri$/} keys %files;
+  or diag "Possible matches: "
+         . join ' ',
+         sort
+         grep {/^__.+ri$/}
+         keys %files;
 
 eval {
     Geo::GDAL::VSIF::Unlink($fn);
@@ -78,7 +82,9 @@ ok(!utf8::is_utf8($fn), "Perl does not know it has utf8");
 eval {
     Geo::GDAL::VSIF::Unlink($fn);
 };
-ok($@, "decoding utf8 to utf8 is not a good idea - expected an exception");
+my $error = $@ || '';
+ok($error, "decoding utf8 to utf8 is not a good idea - expected an exception")
+  or diag "Error string is: '$error'";
 
 Encode::_utf8_on($fn); # yes, you have utf8 now
 eval {
