@@ -72,11 +72,13 @@ close $fh;
 open $fh, '<', "__Äri" or die "Cannot open file Äri";
 $fn = <$fh>;
 chomp($fn);
+close $fh;
+diag $fn;
 ok(!utf8::is_utf8($fn), "Perl does not know it has utf8");
 eval {
     Geo::GDAL::VSIF::Unlink($fn);
 };
-ok($@, "decoding utf8 to utf8 is not a good idea");
+ok($@, "decoding utf8 to utf8 is not a good idea - expected an exception");
 
 Encode::_utf8_on($fn); # yes, you have utf8 now
 eval {
