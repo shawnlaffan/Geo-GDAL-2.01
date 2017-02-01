@@ -2,14 +2,20 @@ use strict;
 use warnings;
 use utf8;
 use Encode qw(encode decode);
-use Test::More tests => 13;
+use Test::More;
+if( $^O =~ 'MSWin' ) {
+    #  The filenames on windows bear no resemblance to that in the perl code,
+    #  probably due to the Unicode Bug.
+    #  These tests should perhaps be skipped on Windows.
+    plan skip_all => 'Tests fail in Windows due to unicode bug';
+}
+else {
+    plan tests => 13;
+}
+
 BEGIN { use_ok('Geo::GDAL') };
 
 # test utf8 conversion in bindings
-#  The filenames on windows bear no resemblance to that in the perl code,
-#  probably due to eh Unicode Bug.
-#  These tests should perhaps be skipped on Windows.
-
 binmode STDERR, ":utf8"; # when debugging, we like to see the truth
 
 my $fn = "__Äri"; # filename with a non-ascii character
